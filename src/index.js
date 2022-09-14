@@ -1,4 +1,4 @@
-// This is the main file for the Netlify Build plugin {{name}}.
+// This is the main file for the Netlify Build plugin chiselstrike.
 // Please read the comments to learn more about the Netlify Build plugin syntax.
 // Find more information in the Netlify documentation.
 
@@ -16,7 +16,7 @@ export const onPreBuild = async function ({
   // For example:
   //
   //   [[plugins]]
-  //   package = "netlify-plugin-{{name}}"
+  //   package = "netlify-plugin-chiselstrike"
   //     [plugins.inputs]
   //     foo = "bar"
   inputs,
