@@ -4,3 +4,7 @@ inputs:
     description: ChiselStrike project ID.
   - name: chiselStrikeDomain
     description: The domain to access ChiselStrike platform API.
+  - name: buildTimeoutSec
+    description:
+      How long should netlify-plugin-chiselstrike should wait for a ChiselStrike
+      build to be ready. Defaults to 30 seconds.

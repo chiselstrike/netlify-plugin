@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const CHISELSTRIKE_DOT_COM = 'chiselstrike.com'
+const DEFAULT_TIMEOUT_SEC = 30
 
 export const onPreBuild = async function ({
   inputs,
@@ -38,9 +39,10 @@ export const onPreBuild = async function ({
 
 async function getChiselStrikeDeploy(inputs) {
   let deploy = null
-  const start = Date.now()
 
-  while (msSince(start) < 10 * 1000) {
+  const start = Date.now()
+  const timeout = getTimeoutMs(inputs)
+  while (msSince(start) < timeout) {
     deploy = await getDeploy(inputs)
     if (isFinal(deploy?.status)) break
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -55,6 +57,14 @@ function msSince(start) {
 
 function isFinal(status) {
   return status === 'OK' || status === 'ERR'
+}
+
+function getTimeoutMs(inputs) {
+  let timeout = parseInt(inputs.buildTimeoutSec)
+  if (isNaN(timeout) || timeout <= 0) {
+    timeout = DEFAULT_TIMEOUT_SEC
+  }
+  return timeout * 1000
 }
 
 async function getDeploy(inputs) {
