@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-export const onPreBuild = async function ({ inputs, utils: { build } }) {
+export const onPreBuild = async function ({
+  inputs,
+  netlifyConfig,
+  utils: { build },
+}) {
   const { projectId } = inputs
   if (projectId == null) {
     return build.failBuild(
@@ -8,17 +12,18 @@ export const onPreBuild = async function ({ inputs, utils: { build } }) {
     )
   }
 
-  const csBuild = await getChiselStrikeBuildResult(
-    projectId,
-    process.env.COMMIT_REF,
-  )
+  const deploy = await getChiselStrikeDeploy(projectId, process.env.COMMIT_REF)
 
-  if (csBuild == 'OK') {
-    console.log(`ChiselStrike build succeeded.`)
+  if (deploy?.status == 'OK') {
+    const domain = deploy.url
+    netlifyConfig.build.environment['CHISELSTRIKE_DEPLOY'] = domain
+    console.log(
+      `ChiselStrike build succeeded. Endpoints available at: https://${domain}`,
+    )
     return
   }
 
-  if (csBuild == 'ERR') {
+  if (deploy?.status == 'ERR') {
     return build.failBuild(
       'ChiselStrike build failed. Interrupting Netlify build.',
     )
@@ -29,17 +34,17 @@ export const onPreBuild = async function ({ inputs, utils: { build } }) {
   )
 }
 
-async function getChiselStrikeBuildResult(projectId, commitRef) {
-  let status = 'UNKNOWN'
+async function getChiselStrikeDeploy(projectId, commitRef) {
+  let deploy = null
   const start = Date.now()
 
   while (msSince(start) < 10 * 1000) {
-    status = await getDeployStatus(projectId, commitRef)
-    if (isFinal(status)) break
+    deploy = await getDeploy(projectId, commitRef)
+    if (isFinal(deploy?.status)) break
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 
-  return status
+  return deploy
 }
 
 function msSince(start) {
@@ -50,16 +55,16 @@ function isFinal(status) {
   return status === 'OK' || status === 'ERR'
 }
 
-async function getDeployStatus(projectId, commitRef) {
+async function getDeploy(projectId, commitRef) {
   const url = `https://chiselstrike.com/api/projects/${projectId}/commits/${commitRef}/deployments`
   const data = await axios
     .get(url)
     .then((r) => r.data)
-    .catch((e) => [])
+    .catch(() => [])
   if (data.length == 0) {
     return 'UNKNOWN'
   }
 
   const [latest] = data
-  return latest.status
+  return latest
 }
