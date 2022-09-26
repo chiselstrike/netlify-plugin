@@ -1,7 +1,4 @@
-name: 'netlify-plugin-{{name}}'
-inputs: []
-# Example inputs:
-#  - name: example
-#    description: Example description
-#    default: 5
-#    required: false
+name: 'netlify-plugin-chiselstrike'
+inputs:
+  - name: projectId
+    description: ChiselStrike project ID.
