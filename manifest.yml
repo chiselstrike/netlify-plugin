@@ -2,3 +2,5 @@ name: 'netlify-plugin-chiselstrike'
 inputs:
   - name: projectId
     description: ChiselStrike project ID.
+  - name: chiselStrikeDomain
+    description: The domain to access ChiselStrike platform API.

@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const CHISELSTRIKE_DOT_COM = 'chiselstrike.com'
+
 export const onPreBuild = async function ({
   inputs,
   netlifyConfig,
@@ -12,7 +14,7 @@ export const onPreBuild = async function ({
     )
   }
 
-  const deploy = await getChiselStrikeDeploy(projectId, process.env.COMMIT_REF)
+  const deploy = await getChiselStrikeDeploy(inputs)
 
   if (deploy?.status == 'OK') {
     const domain = deploy.url
@@ -34,12 +36,12 @@ export const onPreBuild = async function ({
   )
 }
 
-async function getChiselStrikeDeploy(projectId, commitRef) {
+async function getChiselStrikeDeploy(inputs) {
   let deploy = null
   const start = Date.now()
 
   while (msSince(start) < 10 * 1000) {
-    deploy = await getDeploy(projectId, commitRef)
+    deploy = await getDeploy(inputs)
     if (isFinal(deploy?.status)) break
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
@@ -55,12 +57,16 @@ function isFinal(status) {
   return status === 'OK' || status === 'ERR'
 }
 
-async function getDeploy(projectId, commitRef) {
-  const url = `https://chiselstrike.com/api/projects/${projectId}/commits/${commitRef}/deployments`
+async function getDeploy(inputs) {
+  const { projectId, chiselStrikeDomain } = inputs
+  const domain = chiselStrikeDomain ?? CHISELSTRIKE_DOT_COM
+  const commitRef = process.env.COMMIT_REF
+  const url = `https://${domain}/api/projects/${projectId}/commits/${commitRef}/deployments`
   const data = await axios
     .get(url)
     .then((r) => r.data)
     .catch(() => [])
+
   if (data.length == 0) {
     return 'UNKNOWN'
   }
