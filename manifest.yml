@@ -1,7 +1,7 @@
 name: 'netlify-plugin-chiselstrike'
 inputs:
   - name: projectId
-    description: ChiselStrike project ID.
+    description: ChiselStrike project ID. Can be also set through CHISELSTRIKE_PROJECT_ID env var. Required.
   - name: chiselStrikeDomain
     description: The domain to access ChiselStrike platform API.
   - name: buildTimeoutSec

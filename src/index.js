@@ -8,7 +8,7 @@ export const onPreBuild = async function ({
   netlifyConfig,
   utils: { build },
 }) {
-  const { projectId } = inputs
+  const projectId = getProjectId(inputs)
   if (projectId == null) {
     return build.failBuild(
       'ChiselStrike projectId not found. Add it to the plugin inputs.',
@@ -51,6 +51,12 @@ async function getChiselStrikeDeploy(inputs) {
   return deploy
 }
 
+function getProjectId(inputs) {
+  const { projectId } = inputs
+  if (projectId != null) return projectId
+  return process.env.CHISELSTRIKE_PROJECT_ID;
+}
+
 function msSince(start) {
   return Date.now() - start
 }
@@ -68,8 +74,8 @@ function getTimeoutMs(inputs) {
 }
 
 async function getDeploy(inputs) {
-  const { projectId, chiselStrikeDomain } = inputs
-  const domain = chiselStrikeDomain ?? CHISELSTRIKE_DOT_COM
+  const projectId = getProjectId(inputs)
+  const domain = process.env.CHISEL_STRIKE_DOMAIN ?? CHISELSTRIKE_DOT_COM
   const commitRef = process.env.COMMIT_REF
   const url = `https://${domain}/api/projects/${projectId}/commits/${commitRef}/deployments`
   const data = await axios
