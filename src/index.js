@@ -54,7 +54,7 @@ async function getChiselStrikeDeploy(inputs) {
 function getProjectId(inputs) {
   const { projectId } = inputs
   if (projectId != null) return projectId
-  return process.env.CHISELSTRIKE_PROJECT_ID;
+  return process.env.CHISELSTRIKE_PROJECT_ID
 }
 
 function msSince(start) {
