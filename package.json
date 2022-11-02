@@ -1,5 +1,5 @@
 {
-  "name": "netlify-plugin-chiselstrike",
+  "name": "@chiselstrike/netlify-plugin",
   "version": "0.1.0",
   "description": "Netlify Build plugin - Integration with ChiselStrike",
   "type": "module",
@@ -14,11 +14,12 @@
     "manifest.yml"
   ],
   "keywords": [
+    "chiselstrike",
     "netlify-plugin",
     "netlify"
   ],
   "license": "Apache-2.0",
-  "repository": "chiselstrike/netlify-plugin-chiselstrike",
+  "repository": "chiselstrike/netlify-plugin",
   "directories": {
     "lib": "src",
     "test": "test"

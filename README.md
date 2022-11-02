@@ -1,4 +1,4 @@
-# netlify-plugin-chiselstrike
+# @chiselstrike/netlify-plugin
 
 Sync Netlify and ChiselStrike build from projects in the same Git repository.
 
