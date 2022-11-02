@@ -1,6 +1,6 @@
 {
   "name": "netlify-plugin-chiselstrike",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Netlify Build plugin - Integration with ChiselStrike",
   "type": "module",
   "exports": "./src/index.js",
@@ -55,5 +55,8 @@
     "netlify-cli": "^9.16.2",
     "prettier": "^2.1.2",
     "release-it": "^14.0.3"
+  },
+  "dependencies": {
+    "axios": "^0.27.2"
   }
 }

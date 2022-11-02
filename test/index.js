@@ -14,19 +14,12 @@ const NETLIFY_CONFIG = fileURLToPath(
 // Build plugin.
 // This is a smoke test. You will probably want to write more elaborate unit
 // tests to cover your plugin's logic.
-test('Netlify Build should not fail', async (t) => {
-  const { success, logs } = await netlifyBuild({
+test('Unconfigured Netlify Build should fail', async (t) => {
+  const { success } = await netlifyBuild({
     config: NETLIFY_CONFIG,
     buffer: true,
   })
 
-  // Netlify Build output
-  console.log(
-    [logs.stdout.join('\n'), logs.stderr.join('\n')]
-      .filter(Boolean)
-      .join('\n\n'),
-  )
-
-  // Check that build succeeded
-  t.true(success)
+  // Check that build does not succeed, because the project ID isn't set.
+  t.false(success)
 })
